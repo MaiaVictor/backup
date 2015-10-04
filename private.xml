@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<root>
+	<item>
+		<name>Change Stuff</name>
+		<identifier>private.change_stuff</identifier>
+		<autogen>--KeyToKey-- KeyCode::F13, Option::KEYTOKEY_BEFORE_KEYDOWN, KeyCode::CAPSLOCK, Option::KEYTOKEY_AFTER_KEYUP, KeyCode::CAPSLOCK</autogen>
+	</item>
+  <item>
+    <name>Numerical Keyboard with Caps Lock</name>
+    <identifier>private.num_caps</identifier>
+    <autogen>__KeyToKey__ KeyCode::U, ModifierFlag::CAPSLOCK, KeyCode::KEYPAD_7</autogen>
+    <autogen>__KeyToKey__ KeyCode::I, ModifierFlag::CAPSLOCK, KeyCode::KEYPAD_8</autogen>
+    <autogen>__KeyToKey__ KeyCode::O, ModifierFlag::CAPSLOCK, KeyCode::KEYPAD_9</autogen>
+    <autogen>__KeyToKey__ KeyCode::J, ModifierFlag::CAPSLOCK, KeyCode::KEYPAD_4</autogen>
+    <autogen>__KeyToKey__ KeyCode::K, ModifierFlag::CAPSLOCK, KeyCode::KEYPAD_5</autogen>
+    <autogen>__KeyToKey__ KeyCode::L, ModifierFlag::CAPSLOCK, KeyCode::KEYPAD_6</autogen>
+    <autogen>__KeyToKey__ KeyCode::M, ModifierFlag::CAPSLOCK, KeyCode::KEYPAD_1</autogen>
+    <autogen>__KeyToKey__ KeyCode::COMMA, ModifierFlag::CAPSLOCK, KeyCode::KEYPAD_2</autogen>
+    <autogen>__KeyToKey__ KeyCode::DOT, ModifierFlag::CAPSLOCK, KeyCode::KEYPAD_3</autogen>
+    <autogen>__KeyToKey__ KeyCode::N, ModifierFlag::CAPSLOCK, KeyCode::KEYPAD_0</autogen>
+  </item>
+  <item>
+    <name>Numerical Keyboard with FN Fixed</name>
+    <identifier>private.num_fn</identifier>
+    <autogen>__KeyToKey__ KeyCode::U, ModifierFlag::FN, KeyCode::KEYPAD_7</autogen>
+    <autogen>__KeyToKey__ KeyCode::I, ModifierFlag::FN, KeyCode::KEYPAD_8</autogen>
+    <autogen>__KeyToKey__ KeyCode::O, ModifierFlag::FN, KeyCode::KEYPAD_9</autogen>
+    <autogen>__KeyToKey__ KeyCode::J, ModifierFlag::FN, KeyCode::KEYPAD_4</autogen>
+    <autogen>__KeyToKey__ KeyCode::K, ModifierFlag::FN, KeyCode::KEYPAD_5</autogen>
+    <autogen>__KeyToKey__ KeyCode::L, ModifierFlag::FN, KeyCode::KEYPAD_6</autogen>
+    <autogen>__KeyToKey__ KeyCode::M, ModifierFlag::FN, KeyCode::KEYPAD_1</autogen>
+    <autogen>__KeyToKey__ KeyCode::COMMA, ModifierFlag::FN, KeyCode::KEYPAD_2</autogen>
+    <autogen>__KeyToKey__ KeyCode::DOT, ModifierFlag::FN, KeyCode::KEYPAD_3</autogen>
+    <autogen>__KeyToKey__ KeyCode::N, ModifierFlag::FN, KeyCode::KEYPAD_0</autogen>
+  </item>
+</root>
