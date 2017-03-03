@@ -1,6 +1,9 @@
 "folding
 "set foldmethod=indent
 
+" PureScript
+
+
 set foldmethod=expr
 set foldexpr=GetPotionFold(v:lnum)
 set foldminlines=0
@@ -76,15 +79,15 @@ set ttyfast
 set ttyscroll=3
 set lazyredraw
 set hidden
-set wrap      
+set nowrap
 set autoread
 "set smartindent
-set tabstop=4     " a tab is four spaces 
+set tabstop=2     " a tab is four spaces 
 set expandtab     " 
 set backspace=indent,eol,start " allow backspacing over everything in insert mode 
 set autoindent    " always set autoindenting on 
 set number        " always show line numbers 
-set shiftwidth=4  " number of spaces to use for autoindenting 
+set shiftwidth=2  " number of spaces to use for autoindenting 
 set shiftround    " use multiple of shiftwidth when indenting with '<' and '>' 
 set showmatch     " set show matching parenthesis 
 set ignorecase    " ignore case when searching 
@@ -110,9 +113,6 @@ set textwidth=0
 set wrapmargin=0
 
 
-imap → ->
-
-
 " CtrlP stuff
 "let g:ctrlp_default_input = '^'
 "let g:ctrlp_max_depth = 1
@@ -122,14 +122,18 @@ imap → ->
 "let g:ctrlp_by_filename = 1
 "let g:ctrlp_switch_buffer = 0
 "map <leader>x cal ctrlp#exit()
-:map <expr> <space> ":CtrlP ".getcwd()."<cr>"
 ":map <expr> & ":CtrlP ".getcwd()."<cr>"
-:set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.hi,*.o,*.js_hi,*.js_o,*/.git/*,*/elm-stuff/*,*/sprites/* " MacOSX/Linux
+let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
+let g:ctrlp_by_filename = 0
+
+
+:map <expr> <space> ":CtrlP ".getcwd()."<cr>"
+:set wildignore+=*/tmp/*,*/node_modules/*,*/migrations*,*.min.*,*.so,*.swp,*.zip,*.pyc,*.hi,*.o,*.dyn_hi,*.dyn_o,*.jsexe/*,*/dist/*,*/bin/*,*.js_hi,*.js_o,*/.git/*,*/elm-stuff/*,*/sprites/* " MacOSX/Linux
 
 ":map z :!clear;
 
 " I never use marks
-:map m %
+":noremap m %
 
 :noremap j gj
 ":noremap <expr> <leader>h foldlevel(line(".") + 1) ? 'normal! hzO' : 'normal! h'
@@ -138,49 +142,95 @@ imap → ->
 :noremap k gk
 
 
-:nnoremap <expr> <leader>w ':w!<cr>:!clear;browserify --fast -d main.js -o app/main.js; osascript ~/Viclib/osx/chromereload.scpt &<cr><esc><esc>'
-
 
 :nnoremap <expr> <leader>b ':!clear<cr>:w!<cr>:!gulp<cr>:!osascript ~/Viclib/osx/chromereload.scpt &<cr>'
 
 " Compile/run stuff
 
+"\ &ft=='purescript' ? ':!time lambda % --haskell --bruijn --expand --normalize --verbose --stats --javascript main<cr>' :
 :nnoremap <expr> r ':!clear<cr>:w!<cr>'.(
+    \ expand('%:p')=='/Users/v/mist/main.js' ? ':!electron . --rpc ~/Library/Ethereum/testnet/geth.ipc<cr>' :
+    \ expand('%:t')=='test.js' ? ':!mocha<cr>' :
     \ &ft=='lambda'     ? ':!time lambda % --haskell --bruijn --expand --normalize --verbose --stats --javascript main<cr>' :
+    \ &ft=='caramel'    ? ':!time mel main<cr>' :
     \ &ft=='ocaml'      ? ':!ocamlc -o %:r %<cr>:!./%:r<cr>' :
     \ &ft=='factor'     ? ':!~/factor/factor %<cr>' :
     \ &ft=='python'     ? ':!time python %<cr>' :
     \ &ft=='scheme'     ? ':!csc %<cr>:!time ./%:r<cr>' :
     \ &ft=='elm'        ? '<esc>:!clear<cr>:w!<cr>:!elm % -r elm-runtime.js<cr>:!osascript ~/Viclib/osx/chromereload.scpt &<cr>' :
     \ &ft=='racket'     ? ':!racket %<cr>' :
-    \ &ft=='haskell'    ? ':!ghc -outputdir bin -o bin/%:r %<cr>:!time ./bin/%:r<cr>' :
+    \ &ft=='haskell'    ? ':!stack runhaskell %<cr>' :
+    \ &ft=='rust'       ? ':!rustc %<cr>:!time ./%:r<cr>' :
+    \ &ft=='go'         ? ':!time go run %<cr>' :
+    \ &ft=='purescript' ? ':!pulp run --censor-lib<cr>' :
     \ &ft=='dvl'        ? ':!dvl run %<cr>' :
     \ &ft=='javascript' ? ':!time node %<cr>' :
-    \ &ft=='idris'      ? ':!idris % -o %:r<cr>:!./%:r<cr>' :
-    \ &ft=='c'          ? ':!clang -O3 -L/System/Library/Frameworks -Wall % -o %:r<cr>:!time ./%:r<cr>' :
+    \ &ft=='swift'      ? ':!time swift %<cr>' :
+    \ &ft=='solidity'   ? ':!truffle deploy<cr>' :
+    \ &ft=='morte'      ? ':!morte < %<cr>' :
+    \ &ft=='idris'      ? ':!idris % -o %:r<cr>:!time ./%:r<cr>' :
+    \ &ft=='c'          ? ':!clang -O2 -L/System/Library/Frameworks -Wall % -o %:r<cr>:!time ./%:r<cr>' :
     \ &ft=='cuda'       ? ':!rm %:r; nvcc -O3 % -o %:r<cr>:!time ./%:r<cr>' :
     \ &ft=='cpp'        ? ':!clang++ % -o %:r<cr>:!./%:r<cr>' :
     \ &ft=='agda'       ? ':!agda % -o %:r<cr>:!./%:r<cr>' :
     \ &ft=='ls'         ? ':!lsc -c %<cr>:!node %:r.js<cr>' :
+    \ &ft=='sol'         ? ':!time node ~/Sol/cli.js %:r<cr>' :
     \ &ft=='lispell'    ? ':!node ~/Viclib/lispedia/bin/lis.js reduce %:r<cr>' :
-    \ ':!lsc -c %<cr>:!node %:r.js<cr>')
+    \ ':!time cc %<cr>')
 
-    "\ &ft=='c'          ? ':!clang -O3 -L/System/Library/Frameworks -framework GLUT -framework OpenGL -Wall % -o %:r<cr>:!time ./%:r<cr>' :
-":nnoremap <expr> <leader>m ':!clear<cr>:w!<cr>:!make<cr>:!time ./%:r<cr>'
+:nnoremap <expr> R ':!clear<cr>:w!<cr>'.(
+    \ &ft=='lambda'     ? ':!time lambda % --haskell --bruijn --expand --normalize --verbose --stats --javascript main<cr>' :
+    \ &ft=='caramel'    ? ':!time mel main<cr>' :
+    \ &ft=='ocaml'      ? ':!ocamlc -o %:r %<cr>:!./%:r<cr>' :
+    \ &ft=='factor'     ? ':!~/factor/factor %<cr>' :
+    \ &ft=='python'     ? ':!time python %<cr>' :
+    \ &ft=='scheme'     ? ':!csc %<cr>:!time ./%:r<cr>' :
+    \ &ft=='elm'        ? '<esc>:!clear<cr>:w!<cr>:!elm % -r elm-runtime.js<cr>:!osascript ~/Viclib/osx/chromereload.scpt &<cr>' :
+    \ &ft=='racket'     ? ':!racket %<cr>' :
+    \ &ft=='haskell'    ? ':!stack build; time stack exec %:t:r<cr>' :
+    \ &ft=='rust'       ? ':!rustc %<cr>:!time ./%:r<cr>' :
+    \ &ft=='go'         ? ':!time go run %<cr>' :
+    \ &ft=='purescript' ? ':!pulp run --censor-lib<cr>' :
+    \ &ft=='dvl'        ? ':!dvl run %<cr>' :
+    \ &ft=='javascript' ? ':!time node %<cr>' :
+    \ &ft=='solidity'   ? ':!truffle deploy<cr>' :
+    \ &ft=='morte'      ? ':!morte < %<cr>' :
+    \ &ft=='idris'      ? ':!idris % -o %:r<cr>:!time ./%:r<cr>' :
+    \ &ft=='c'          ? ':!clang -O2 -L/System/Library/Frameworks -Wall % -o %:r<cr>:!time ./%:r<cr>' :
+    \ &ft=='cuda'       ? ':!rm %:r; nvcc -O3 % -o %:r<cr>:!time ./%:r<cr>' :
+    \ &ft=='cpp'        ? ':!clang++ % -o %:r<cr>:!./%:r<cr>' :
+    \ &ft=='agda'       ? ':!agda % -o %:r<cr>:!./%:r<cr>' :
+    \ &ft=='ls'         ? ':!lsc -c %<cr>:!node %:r.js<cr>' :
+    \ &ft=='sol'         ? ':!time node ~/Sol/cli.js %:r<cr>' :
+    \ &ft=='lispell'    ? ':!node ~/Viclib/lispedia/bin/lis.js reduce %:r<cr>' :
+    \ ':!time cc %<cr>')
+
+
+":nnoremap <expr> r ':w!<CR>:!clear;runhaskell %<CR>'
+:nnoremap <expr> <leader>r ':!clear<cr>:w!<cr>'.(
+    \ &ft=='purescript' ? ':!pulp test<cr>' :
+    \ ':!time cc %<cr>')
+
 ":nnoremap <expr> R ':!clear<cr>:w!<cr>:!ghc -outputdir bin -O2 -threaded -rtsopts -funfolding-use-threshold10000 -funfolding-keeness-factor1000 -optlo-O3 -fllvm -o %:r %<cr>:!time ./%:r +RTS -N4<cr>'
-:nnoremap <expr> R ':!clear<cr>:w!<cr>:!ghc -outputdir bin -O2 -fllvm -o bin/%:r %<cr>:!time ./bin/%:r<cr>'
+":nnoremap <expr> R ':!clear<cr>:w!<cr>:!stack ghc -- -i$HOME/Haskell/Haelin/src -O2 -outputdir bin -o bin/%:r %<cr>:!time ./bin/%:r<cr>'
 
 
 
+":nnoremap <expr> <leader>w ':w!<cr>:!clear; browserify --fast -d main.js -o main.min.js; :!~/backup/reload_safari &<cr><esc><esc>'
+":nnoremap <expr> <leader>w ':w!<cr>:!clear; browserify --fast -d %:r.js -o %:r.min.js<cr>:!~/backup/reload_safari &<cr>'
+":nnoremap <expr> <leader>w ':w!<cr>:!clear; npm run build<cr>:!~/backup/reload_safari &<cr>'
 
+:nnoremap <expr> <leader>w ':w!<cr>:!clear; npm run build<cr>:!osascript ~/OSX/chromereload.scpt &<cr>'
 
-:nnoremap <expr> <leader>r ':!clear<cr>:w!<cr>:!runghc -i$HOME/Viclib/Haskell %<cr>'
-:nnoremap <expr> <leader>g ':!clear<cr>:w!<cr>:!ghcjs -i$HOME/Viclib/Haskell -fforce-recomp -O2 -rtsopts -funfolding-use-threshold10000 -funfolding-keeness-factor1000 -optlo-O3 -threaded -o %:r.js %<cr>:!time node ./%:r.js/all.js<cr>:!rm %:r.js_o; rm %:r.js_hi<cr>'
+:nnoremap <expr> <leader>g ':!clear<cr>:w!<cr>:!ghcjs -i$HOME/Haskell/Haelin/src -fforce-recomp -O2 -rtsopts -funfolding-use-threshold10000 -funfolding-keeness-factor1000 -optlo-O3 -threaded -o %:r.js %<cr>:!time node ./%:r.js/all.js<cr>:!rm %:r.js_o; rm %:r.js_hi<cr>'
 
 "NERDTree stuff
-:let NERDTreeIgnore = ['\.hi$','\.o$','\.js_o$','\.js_hi$']
+:let NERDTreeIgnore = ['\.min.js$','\.pyc$','\.hi$','\.o$','\.js_o$','\.js_hi$','\.dyn_o$','\.dyn_hi$','\.jsexe','.*dist\/.*','.*bin\/.*']
 :let NERDTreeChDirMode = 2
+":let g:NERDTreeMenu = 'k'
+":let NERDChristmasTree = 1
 :nmap <expr> <enter> v:count1 <= 1 ? "<C-h>C<C-w>p" : "@_<C-W>99h". v:count1 ."Go<C-w>l"
+
 au VimEnter * NERDTree
 au VimEnter * set nu
 au VimEnter * wincmd l
@@ -213,11 +263,11 @@ au VimEnter * wincmd l
 :map <up> 4<C-w>-
 :map <down> 4<C-w>+
 :noremap <C-j> <esc><C-w>j
-:noremap <C-k> <esc><C-w>k
+":noremap <C-k> <esc><C-w>k
 :noremap <C-h> <esc><C-w>h
 :noremap <C-l> <esc><C-w>l
 :map! <C-j> <esc><C-w>j
-:map! <C-k> <esc><C-w>k
+":map! <C-k> <esc><C-w>k
 :map! <C-h> <esc><C-w>h
 :map! <C-l> <esc><C-w>l
 
@@ -240,6 +290,7 @@ hi link lsReservedError NONE
 
 " cursor always in middle of screen
 :set so=99999
+:set siso=99999
 
 :map , <leader>
 
@@ -272,7 +323,7 @@ augroup myvimrc
     au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc so ~/.vim/.vimrc "$MYVIMRC
 augroup END
 call pathogen#runtime_append_all_bundles()
-call pathogen#helptags()
+"call pathogen#helptags()
 
 " previous and next location
 :nnoremap <C-u> <C-o>
@@ -317,7 +368,7 @@ call pathogen#helptags()
 :nmap <S-tab> << 
 :map U <C-r>
 :nmap <C-j> <C-w>j
-:nmap <C-k> <C-w>k
+":nmap <C-k> <C-w>k
 :nmap <C-l> <C-w>l
 :nmap <C-h> <C-w>h
 
@@ -328,17 +379,28 @@ call pathogen#helptags()
 :vnoremap L $
 
 " idris ft
-"au BufNewFile,BufRead *.ls set filetype=Livescript
+"au BufNewFile,BufRead *.ls set filetype=LLivescript
+au BufNewFile,BufRead *.purs set filetype=purescript
 au BufNewFile,BufRead *.chaos set filetype=chaos
 au BufNewFile,BufRead *.chaos set syntax=javascript
 au BufNewFile,BufRead *.idr set filetype=idris
 au BufNewFile,BufRead *.lc set filetype=lambda
 au BufNewFile,BufRead *.lc set syntax=elm
+au BufNewFile,BufRead *.mt set filetype=morte
+au BufNewFile,BufRead *.lam set filetype=lambda
+au BufNewFile,BufRead *.lam set syntax=elm
+au BufNewFile,BufRead *.mel set filetype=caramel
+au BufNewFile,BufRead *.mel set syntax=elm
 au BufNewFile,BufRead *.agda set filetype=agda
 au BufNewFile,BufRead *.dvl set filetype=dvl
 au BufNewFile,BufRead *.lis set filetype=lispell
 au BufNewFile,BufRead *.lscm set filetype=lispell
+au BufNewFile,BufRead *.sol set filetype=sol
+au BufNewFile,BufRead *.soli set filetype=solidity
 "filetype plugin on
+
+"filetype on
+"filetype plugin indent on
 
 " C++11 syntax
 au BufNewFile,BufRead *.cpp set syntax=cpp11
@@ -362,7 +424,7 @@ nnoremap <silent><leader>n :set relativenumber!<cr>
 :map <leader>e :w!<cr>:!node chaos.js<cr>:e!<cr>:echo 'done'<cr>
 ":map <leader>w <cr>:!node chaos.js -r expand("<cword>")<cr>:e!<cr>
 :map <leader>h :w!<cr>:!clear;hlint %<cr>
-:map <leader>p :w!<cr>:!clear;ghc -O2 --make % -prof -auto-all -caf-all -fforce-recomp;time ./%:r +RTS -p<cr>:e %:r.prof<cr>zR<cr>
+":map <leader>p :w!<cr>:!clear;ghc -O2 --make % -prof -auto-all -caf-all -fforce-recomp;time ./%:r +RTS -p<cr>:e %:r.prof<cr>zR<cr>
 :map <leader>C :w!<cr>:!clear;java -jar ~/bin/compiler.jar --compilation_level ADVANCED_OPTIMIZATIONS --js % > %:r.min.js<cr>:e %:r.min.js<cr>
 :unmap <C-i>
 "au BufEnter *.hs compiler ghc
@@ -376,7 +438,8 @@ nnoremap <silent><leader>n :set relativenumber!<cr>
 ":map <leader>t :w!<cr>:!clear<cr>:!tmux send-keys :\!clear Enter :r Enter :\!clear Enter :t Space <cword> Enter d; tmux attach<cr>
 
 
-:map <leader>m :w!<cr>:!ghci -i$HOME/Viclib/haskell %<cr>
+":map <leader>m :w!<cr>:!ghci -i$HOME/Viclib/haskell %<cr>
+":map <leader>m :w!<cr>:!clear<CR>:!stack ghci %<cr>
 
 ":set comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-,:--
 :set comments+=:--
@@ -402,3 +465,89 @@ function! s:CloseIfOnlyNerdTreeLeft()
     endif
   endif
 endfunction
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+" call current line as a terminal command, paste below
+map <leader>, 0y$:r!<C-r>"<CR>
+
+" CtrlP auto cache clearing.
+" ----------------------------------------------------------------------------
+function! SetupCtrlP()
+  if exists("g:loaded_ctrlp") && g:loaded_ctrlp
+    augroup CtrlPExtension
+      autocmd!
+      autocmd FocusGained  * CtrlPClearCache
+      autocmd BufWritePost * CtrlPClearCache
+    augroup END
+  endif
+endfunction
+if has("autocmd")
+  autocmd VimEnter * :call SetupCtrlP()
+endif
+
+"autocmd BufWriteCmd *.html,*.css,*.js :call Reload_Safari()
+"function! Reload_Safari()
+    "if &modified
+    "write ' save the file
+    "' ... call the applescript
+    "endif
+"endfunction
+
+
+:noremap m %
+
+
+":noremap <leader>g <C-]>
+set runtimepath^=~/.vim/bundle/ag
+
+
+
+
+
+
+
+
+
+
+
+" purescript
+:map <leader>mt :PSCIDEtype<CR>
+:map <leader>mi :PSCIDEimportIdentifier<CR>
+:map <leader>mat :PSCIDEaddTypeAnnotation<CR>
+:map <leader>mai :PSCIDEaddImportQualifications<CR>
+:map <leader>mri :PSCIDEremoveImportQualifications<CR>
+:map <leader>ms :PSCIDEapplySuggestion<CR>
+:map <leader>mc :PSCIDEcaseSplit<CR>
+:map <leader>mp :PSCIDEpursuit<CR>
+:map <leader>mr :PSCIDEload<CR>
+:map <leader>mf :PSCIDEaddClause<CR>
+
+
+" https://gist.github.com/bignimbus/1da46a18416da4119778
+" Set the title of the Terminal to the currently open file
+function! SetTerminalTitle()
+    let titleString = expand('%:t')
+    if len(titleString) > 0
+        let &titlestring = expand('%:t')
+        " this is the format iTerm2 expects when setting the window title
+        let args = "\033];".&titlestring."\007"
+        let cmd = 'silent !echo -e "'.args.'"'
+        execute cmd
+        redraw!
+    endif
+endfunction
+autocmd BufEnter * call SetTerminalTitle()
