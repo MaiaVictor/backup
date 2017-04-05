@@ -146,8 +146,8 @@ let g:ctrlp_by_filename = 0
 :nnoremap <expr> <leader>b ':!clear<cr>:w!<cr>:!gulp<cr>:!osascript ~/Viclib/osx/chromereload.scpt &<cr>'
 
 " Compile/run stuff
+"\ &ft=='haskell'    ? ':!stack runhaskell %<cr>' :
 
-"\ &ft=='purescript' ? ':!time lambda % --haskell --bruijn --expand --normalize --verbose --stats --javascript main<cr>' :
 :nnoremap <expr> r ':!clear<cr>:w!<cr>'.(
     \ expand('%:p')=='/Users/v/mist/main.js' ? ':!electron . --rpc ~/Library/Ethereum/testnet/geth.ipc<cr>' :
     \ expand('%:t')=='test.js' ? ':!mocha<cr>' :
@@ -156,10 +156,11 @@ let g:ctrlp_by_filename = 0
     \ &ft=='ocaml'      ? ':!ocamlc -o %:r %<cr>:!./%:r<cr>' :
     \ &ft=='factor'     ? ':!~/factor/factor %<cr>' :
     \ &ft=='python'     ? ':!time python %<cr>' :
+    \ &ft=='coc'        ? ':!time (coc type %:r; coc norm %:r)<cr>' :
     \ &ft=='scheme'     ? ':!csc %<cr>:!time ./%:r<cr>' :
     \ &ft=='elm'        ? '<esc>:!clear<cr>:w!<cr>:!elm % -r elm-runtime.js<cr>:!osascript ~/Viclib/osx/chromereload.scpt &<cr>' :
     \ &ft=='racket'     ? ':!racket %<cr>' :
-    \ &ft=='haskell'    ? ':!stack runhaskell %<cr>' :
+    \ &ft=='haskell'    ? ':!runhaskell %<cr>' :
     \ &ft=='rust'       ? ':!rustc %<cr>:!time ./%:r<cr>' :
     \ &ft=='go'         ? ':!time go run %<cr>' :
     \ &ft=='purescript' ? ':!pulp run --censor-lib<cr>' :
@@ -171,7 +172,7 @@ let g:ctrlp_by_filename = 0
     \ &ft=='idris'      ? ':!idris % -o %:r<cr>:!time ./%:r<cr>' :
     \ &ft=='c'          ? ':!clang -O2 -L/System/Library/Frameworks -Wall % -o %:r<cr>:!time ./%:r<cr>' :
     \ &ft=='cuda'       ? ':!rm %:r; nvcc -O3 % -o %:r<cr>:!time ./%:r<cr>' :
-    \ &ft=='cpp'        ? ':!clang++ % -o %:r<cr>:!./%:r<cr>' :
+    \ &ft=='cpp'        ? ':!clang++ -O3 % -o %:r<cr>:!time ./%:r<cr>' :
     \ &ft=='agda'       ? ':!agda % -o %:r<cr>:!./%:r<cr>' :
     \ &ft=='ls'         ? ':!lsc -c %<cr>:!node %:r.js<cr>' :
     \ &ft=='sol'         ? ':!time node ~/Sol/cli.js %:r<cr>' :
@@ -384,6 +385,7 @@ au BufNewFile,BufRead *.purs set filetype=purescript
 au BufNewFile,BufRead *.chaos set filetype=chaos
 au BufNewFile,BufRead *.chaos set syntax=javascript
 au BufNewFile,BufRead *.idr set filetype=idris
+au BufNewFile,BufRead *.coc set filetype=coc
 au BufNewFile,BufRead *.lc set filetype=lambda
 au BufNewFile,BufRead *.lc set syntax=elm
 au BufNewFile,BufRead *.mt set filetype=morte
